@@ -26,7 +26,7 @@ func TestGenerateCancel(t *testing.T) {
 	generated := Generate(ctx, 1, 2, 3, 4)
 
 	i := 0
-	for _ = range generated {
+	for range generated {
 		i++
 		if i == 1 {
 			cancel()

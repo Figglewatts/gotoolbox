@@ -32,7 +32,7 @@ func TestMultiplexCancel(t *testing.T) {
 	results := Multiplex(ctx, a, b)
 
 	i := 0
-	for _ = range results {
+	for range results {
 		i++
 		if i == 2 {
 			cancel()

@@ -22,7 +22,7 @@ func TestContextGuard(t *testing.T) {
 	guardedChan := ContextGuard(ctx, channel)
 
 	i := 0
-	for _ = range guardedChan {
+	for range guardedChan {
 		cancel()
 		i++
 	}
