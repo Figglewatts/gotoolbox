@@ -24,8 +24,9 @@ func ContextGuard[T any](ctx context.Context, c <-chan T) <-chan T {
 					return // account for channel closing
 				}
 				select {
-				case valStream <- v:
 				case <-ctx.Done(): // also guard when writing
+					return
+				case valStream <- v:
 				}
 			}
 		}

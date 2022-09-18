@@ -3,3 +3,6 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/figglewatts/gotoolbox.svg)](https://pkg.go.dev/github.com/figglewatts/gotoolbox)
 
 A toolbox of various utilities that make writing Go easier.
+
+## [`channels`](https://pkg.go.dev/github.com/figglewatts/gotoolbox/pkg/channels) package
+The `channels` package provides a number of functions that make working with and composing channels easier.
