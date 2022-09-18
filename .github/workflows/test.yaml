@@ -39,8 +39,6 @@ jobs:
           cache: true
       - name: Run tests
         run: go test -v -race -covermode=atomic ./...
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
 
   coverage:
     runs-on: ubuntu-latest
