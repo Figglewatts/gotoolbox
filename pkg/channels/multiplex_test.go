@@ -39,7 +39,7 @@ func TestMultiplexCancel(t *testing.T) {
 		}
 	}
 
-	assert.Less(t, i, 3, "Iterations must be less than input size")
+	assert.Less(t, i, 4, "Iterations must be less than input size")
 }
 
 func ExampleMultiplex() {
