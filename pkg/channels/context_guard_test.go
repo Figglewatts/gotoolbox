@@ -4,36 +4,50 @@ import (
 	"context"
 	"fmt"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestContextGuard(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	cancel() // immediately cancel
 
 	channel := make(chan int)
-	go func() {
-		defer close(channel)
-		for v := range []int{1, 2, 3, 4} {
-			channel <- v
-		}
-	}()
-	guardedChan := ContextGuard(ctx, channel)
+	guardedChannel := ContextGuard(ctx, channel)
 
-	i := 0
-	for range guardedChan {
-		cancel()
-		i++
+	// reading from the unguarded channel should block as no values
+	// will be sent
+	select {
+	case v := <-channel:
+		t.Errorf("<-channel == %v want nothing (it should block)", v)
+	default:
 	}
 
-	assert.Less(t, i, 4, "Iterations should be less than input length")
+	// however reading from the guarded channel will not block, as
+	// we are guarding for the context being done - we should not
+	// perform any iterations here
+	for val := range guardedChannel {
+		t.Errorf("<-guardedChannel == %v want nothing (it should close)", val)
+	}
 }
 
-func ExampleContextGuard() {
-	ctx := context.Background()
-	channel := Generate(ctx, 1, 2, 3, 4)
+func TestContextGuardCancel(t *testing.T) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	channel := cancelAfterOne(Generate(ctx, 1, 2, 3, 4), cancel)
+	guarded := ContextGuard(ctx, channel)
 
+	// read the first value
+	<-guarded
+
+	v, ok := <-guarded
+	if ok {
+		t.Errorf("guarded channel should be closed, got: %v", v)
+	}
+}
+
+func TestExampleContextGuard(t *testing.T) {
+	channel := Generate(context.Background(), 1, 2, 3)
+
+	ctx := context.Background()
 	for val := range ContextGuard(ctx, channel) {
 		fmt.Println(val)
 	}
@@ -42,5 +56,4 @@ func ExampleContextGuard() {
 	// 1
 	// 2
 	// 3
-	// 4
 }

@@ -21,19 +21,17 @@ func TestGenerate(t *testing.T) {
 
 func TestGenerateCancel(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	cancel()
 
-	generated := Generate(ctx, 1, 2, 3, 4)
+	channel := cancelAfterOne(Generate(ctx, 1, 2, 3, 4), cancel)
 
-	i := 0
-	for range generated {
-		i++
-		if i == 1 {
-			cancel()
-		}
+	// read the first value
+	<-channel
+
+	v, ok := <-channel
+	if ok {
+		t.Errorf("channel should be closed, got: %v", v)
 	}
-
-	assert.Less(t, i, 4, "Iterations must be less than input size")
 }
 
 func ExampleGenerate() {

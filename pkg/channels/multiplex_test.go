@@ -29,17 +29,15 @@ func TestMultiplexCancel(t *testing.T) {
 	a := Generate(ctx, 0, 2)
 	b := Generate(ctx, 1)
 
-	results := Multiplex(ctx, a, b)
+	channel := cancelAfterOne(Multiplex(ctx, a, b), cancel)
 
-	i := 0
-	for range results {
-		i++
-		if i == 2 {
-			cancel()
-		}
+	// read the first value
+	<-channel
+
+	v, ok := <-channel
+	if ok {
+		t.Errorf("channel should be closed, got: %v", v)
 	}
-
-	assert.Less(t, i, 4, "Iterations must be less than input size")
 }
 
 func ExampleMultiplex() {
