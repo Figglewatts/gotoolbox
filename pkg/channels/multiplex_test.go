@@ -20,6 +20,11 @@ func TestMultiplex(t *testing.T) {
 
 	received := Receive(ctx, results)
 	assert.ElementsMatch(t, expected, received)
+
+	v, ok := <-results
+	if ok {
+		t.Errorf("results channel was not closed, got: %v", v)
+	}
 }
 
 func TestMultiplexCancel(t *testing.T) {

@@ -17,6 +17,11 @@ func TestGenerate(t *testing.T) {
 	result := Receive(ctx, generated)
 
 	assert.Equal(t, expected, result)
+
+	v, ok := <-generated
+	if ok {
+		t.Errorf("generated channel was not closed, got: %v", v)
+	}
 }
 
 func TestGenerateCancel(t *testing.T) {
