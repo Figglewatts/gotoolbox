@@ -12,3 +12,6 @@ A toolbox of various utilities that make writing Go easier.
 
 ## [`channels`](https://pkg.go.dev/github.com/figglewatts/gotoolbox/pkg/channels) package
 The `channels` package provides a number of functions that make working with and composing channels easier.
+
+## [`slice`](https://pkg.go.dev/github.com/figglewatts/gotoolbox/pkg/slice) package
+The `slice` package provides tools that make working with slices easier.
